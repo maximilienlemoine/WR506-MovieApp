@@ -93,9 +93,15 @@ class Movie
     #[ORM\JoinColumn(nullable: false)]
     private ?User $creator = null;
 
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: MediaObject::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['movie:read', 'movie:write', 'actor:read'])]
+    private ?Collection $mediaObjects;
+
     public function __construct()
     {
         $this->actors = new ArrayCollection();
+        $this->mediaObjects = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -255,6 +261,33 @@ class Movie
     public function setCreator(?User $creator): static
     {
         $this->creator = $creator;
+
+        return $this;
+    }
+
+    public function getMediaObjects(): ?Collection
+    {
+        return $this->mediaObjects;
+    }
+
+    public function addMediaObject(MediaObject $mediaObject): static
+    {
+        if (!$this->mediaObjects->contains($mediaObject)) {
+            $this->mediaObjects->add($mediaObject);
+            $mediaObject->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMediaObject(MediaObject $mediaObject): static
+    {
+        if ($this->mediaObjects->removeElement($mediaObject)) {
+            // set the owning side to null (unless already changed)
+            if ($mediaObject->getMovie() === $this) {
+                $mediaObject->setMovie(null);
+            }
+        }
 
         return $this;
     }

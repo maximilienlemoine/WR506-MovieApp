@@ -68,9 +68,15 @@ class Actor
     #[Groups(['actor:read'])]
     private Collection $movies;
 
+    #[ORM\OneToMany(mappedBy: 'actor', targetEntity: MediaObject::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['actor:read', 'actor:write', 'movie:read'])]
+    private Collection $mediaObjects;
+
     public function __construct()
     {
         $this->movies = new ArrayCollection();
+        $this->mediaObjects = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -160,6 +166,38 @@ class Actor
     {
         if ($this->movies->removeElement($movie)) {
             $movie->removeActor($this);
+        }
+
+        return $this;
+    }
+
+
+
+    /**
+     * @return Collection
+     */
+    public function getMediaObjects(): Collection
+    {
+        return $this->mediaObjects;
+    }
+
+    public function addMediaObject(MediaObject $mediaObject): static
+    {
+        if (!$this->mediaObjects->contains($mediaObject)) {
+            $this->mediaObjects->add($mediaObject);
+            $mediaObject->setActor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMediaObject(MediaObject $mediaObject): static
+    {
+        if ($this->mediaObjects->removeElement($mediaObject)) {
+            // set the owning side to null (unless already changed)
+            if ($mediaObject->getActor() === $this) {
+                $mediaObject->setActor(null);
+            }
         }
 
         return $this;
