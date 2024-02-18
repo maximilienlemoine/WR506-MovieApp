@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: NationalityRepository::class)]
 #[ApiResource(
@@ -27,10 +28,12 @@ class Nationality
 
     #[ORM\Column(length: 255)]
     #[Groups(['actor:read', 'movie:read'])]
+    #[Assert\NotBlank(message: 'Le pays est obligatoire')]
     private ?string $country = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['actor:read'])]
+    #[Assert\NotBlank(message: 'La langue est obligatoire')]
     private ?string $language = null;
 
     #[ORM\OneToMany(mappedBy: 'nationality', targetEntity: Actor::class, orphanRemoval: true)]
