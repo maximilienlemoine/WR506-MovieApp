@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ActorRepository::class)]
 #[ApiResource(
@@ -45,23 +46,39 @@ class Actor
 
     #[ORM\Column(length: 255)]
     #[Groups(['actor:read', 'actor:write', 'movie:read'])]
+    #[Assert\NotBlank(message: 'Le prénom de l\'acteur est obligatoire')]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['actor:read', 'actor:write', 'movie:read'])]
+    #[Assert\NotBlank(message: 'Le nom de l\'acteur est obligatoire')]
     private ?string $lastName = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['actor:read', 'actor:write', 'movie:read'])]
+    #[Assert\NotNull(message: 'La date de naissance de l\'acteur est obligatoire')]
     private ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['actor:read', 'actor:write', 'movie:read'])]
+    #[Assert\Choice(
+        choices: [
+            'Oscar',
+            'César',
+            'Palme d\'or',
+            'Prix d\'interprétation masculine',
+            'Prix d\'interprétation féminine',
+            'Golden Globes',
+            'Grammy Awards',
+        ],
+        message: 'La récompense doit être une des valeurs suivantes : {{ choices }}'
+    )]
     private ?string $reward = null;
 
     #[ORM\ManyToOne(inversedBy: 'actors')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['actor:read', 'actor:write', 'movie:read'])]
+    #[Assert\NotNull(message: 'La nationalité de l\'acteur est obligatoire')]
     private ?Nationality $nationality = null;
 
     #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actors')]
