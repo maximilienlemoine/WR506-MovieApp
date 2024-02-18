@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: NationalityRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(),
+        new GetCollection(security: "is_granted('ROLE_USER')"),
     ],
     paginationEnabled: false,
 )]
@@ -33,7 +33,7 @@ class Nationality
     #[Groups(['actor:read'])]
     private ?string $language = null;
 
-    #[ORM\OneToMany(targetEntity: Actor::class, mappedBy: 'nationality', orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'nationality', targetEntity: Actor::class, orphanRemoval: true)]
     private Collection $actors;
 
     public function __construct()
