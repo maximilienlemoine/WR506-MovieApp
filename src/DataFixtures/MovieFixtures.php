@@ -29,7 +29,8 @@ class MovieFixtures extends Fixture implements DependentFixtureInterface
                 ->setWebsite($faker->url)
                 ->setAverageRating(rand(0, 10))
                 ->setCategory($this->getReference('category_' . rand(1, 18)))
-                ->setCreator($this->getReference('user_' . rand(1, 6)));
+                ->setCreator($this->getReference('user_' . rand(1, 6)))
+                ->addMediaObject($this->getReference('mediaObject_movie_' . $i));
             foreach (range(1, rand(2, 28)) as $j) {
                 $movie->addActor($this->getReference('actor_' . rand(1, 30)));
             }
@@ -44,6 +45,7 @@ class MovieFixtures extends Fixture implements DependentFixtureInterface
         return [
             UserFixtures::class,
             ActorFixtures::class,
+            MediaObjectFixtures::class,
         ];
     }
 }
