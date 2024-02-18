@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -41,8 +42,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $resetToken = null;
 
-    #[ORM\OneToMany(targetEntity: Movie::class, mappedBy: 'creator', orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Movie::class, orphanRemoval: true)]
     private Collection $movies;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?MediaObject $mediaObject = null;
 
     public function __construct()
     {
@@ -193,6 +197,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $movie->setCreator(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMediaObject(): ?MediaObject
+    {
+        return $this->mediaObject;
+    }
+
+    public function setMediaObject(?MediaObject $mediaObject): static
+    {
+        $this->mediaObject = $mediaObject;
 
         return $this;
     }
