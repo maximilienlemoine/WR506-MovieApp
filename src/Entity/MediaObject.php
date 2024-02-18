@@ -79,7 +79,7 @@ class MediaObject
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?Actor $actor = null;
 
-    #[ORM\OneToOne(inversedBy: 'mediaObjects', targetEntity: User::class)]
+    #[ORM\OneToOne(mappedBy: 'mediaObject', targetEntity: User::class)]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?User $user = null;
 
