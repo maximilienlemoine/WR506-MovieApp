@@ -22,11 +22,11 @@ class UserFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         foreach (range(1, 6) as $i) {
+            $role = ['ROLE_USER'];
             if ($i === 1) {
                 $role = ['ROLE_ADMIN'];
-            } else {
-                $role = ['ROLE_USER'];
             }
+
             $user = new User();
             $user->setEmail('user' . $i . '@example.com')
                 ->setPassword(
