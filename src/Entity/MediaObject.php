@@ -21,8 +21,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[ApiResource(
     types: ['https://schema.org/MediaObject'],
     operations: [
-        new Get(),
-        new GetCollection(),
+        new Get(security: "is_granted('ROLE_USER')"),
+        new GetCollection(security: "is_granted('ROLE_USER')"),
         new Post(
             controller: MediaObjectController::class,
             openapi: new Model\Operation(
@@ -42,6 +42,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                     ])
                 )
             ),
+            security: "is_granted('ROLE_ADMIN')",
             validationContext: ['groups' => ['Default', 'media_object:create']],
             deserialize: false
         )
