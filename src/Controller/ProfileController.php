@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
-class ProfilController extends AbstractController
+class ProfileController extends AbstractController
 {
     private UserRepository $userRepository;
     private MediaObjectNormalizer $mediaObjectNormalizer;
