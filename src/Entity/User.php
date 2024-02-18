@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -28,6 +29,18 @@ use Symfony\Component\Validator\Constraints as Assert;
             description: 'Modifie le profil de l\'utilisateur connecté',
             security: "is_granted('ROLE_USER') and object == user",
             name: 'update_profil',
+        ),
+        new Post(
+            routeName: 'forgot_password',
+            description: 'Demande de réinitialisation du mot de passe',
+            security: "is_granted('IS_AUTHENTICATED_ANONYMOUSLY')",
+            name: 'forgot_password',
+        ),
+        new Post(
+            routeName: 'reset_password',
+            description: 'Réinitialisation du mot de passe',
+            security: "is_granted('IS_AUTHENTICATED_ANONYMOUSLY')",
+            name: 'reset_password',
         ),
     ],
     normalizationContext: [
