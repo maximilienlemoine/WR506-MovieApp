@@ -36,7 +36,8 @@ class ActorFixtures extends Fixture implements DependentFixtureInterface
                 ->setReward($reward[rand(0, 6)])
                 ->setFirstName(substr($fullname, 0, strpos($fullname, ' ')))
                 ->setLastName(substr($fullname, strpos($fullname, ' ') + 1))
-                ->setNationality($this->getReference('nationalite_' . rand(1, 34)));
+                ->setNationality($this->getReference('nationalite_' . rand(1, 34)))
+                ->addMediaObject($this->getReference('mediaObject_actor_' . $i));
             $manager->persist($actor);
             $this->addReference('actor_' . $i, $actor);
         }
@@ -48,6 +49,7 @@ class ActorFixtures extends Fixture implements DependentFixtureInterface
     {
         return [
             NationaliteFixtures::class,
+            MediaObjectFixtures::class,
         ];
     }
 }

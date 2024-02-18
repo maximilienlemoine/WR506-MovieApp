@@ -35,7 +35,8 @@ class UserFixtures extends Fixture
                 ->setFirstname('Firstname' . $i)
                 ->setLastname('Lastname' . $i)
                 ->setFrontUsername('Username' . $i)
-                ->setRoles($role);
+                ->setRoles($role)
+                ->setMediaObject($this->getReference('mediaObject_user_' . $i));
             $manager->persist($user);
             $this->addReference('user_' . $i, $user);
         }
@@ -47,6 +48,7 @@ class UserFixtures extends Fixture
     {
         return [
             MovieFixtures::class,
+            MediaObjectFixtures::class,
         ];
     }
 }
