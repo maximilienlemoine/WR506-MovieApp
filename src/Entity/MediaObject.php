@@ -78,6 +78,10 @@ class MediaObject
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?Actor $actor = null;
 
+    #[ORM\OneToOne(inversedBy: 'mediaObjects', targetEntity: User::class)]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -126,6 +130,18 @@ class MediaObject
     public function setFilePath(?string $filePath): MediaObject
     {
         $this->filePath = $filePath;
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
         return $this;
     }
 }
