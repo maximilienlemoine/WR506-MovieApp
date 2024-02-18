@@ -50,6 +50,10 @@ class Movie
     #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
     private Collection $actors;
 
+    #[ORM\ManyToOne(inversedBy: 'movies')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $creator = null;
+
     public function __construct()
     {
         $this->actors = new ArrayCollection();
@@ -200,6 +204,18 @@ class Movie
     public function removeActor(Actor $actor): static
     {
         $this->actors->removeElement($actor);
+
+        return $this;
+    }
+
+    public function getCreator(): ?User
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?User $creator): static
+    {
+        $this->creator = $creator;
 
         return $this;
     }
