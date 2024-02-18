@@ -45,7 +45,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Movie::class, orphanRemoval: true)]
     private Collection $movies;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'user', targetEntity: MediaObject::class, cascade: ['persist', 'remove'])]
     private ?MediaObject $mediaObject = null;
 
     public function __construct()
