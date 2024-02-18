@@ -2,52 +2,91 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\MovieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Post(),
+        new Get(),
+        new Delete(),
+        new Patch(),
+    ],
+    normalizationContext: [
+        'groups' => ['movie:read'],
+    ],
+    denormalizationContext: [
+        'groups' => ['movie:write'],
+    ],
+)]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
+#[ApiFilter(NumericFilter::class, properties: ['averageRating'])]
 class Movie
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['movie:read', 'actor:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['movie:read', 'movie:write', 'actor:read'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['movie:read', 'movie:write', 'actor:read'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['movie:read', 'movie:write'])]
     private ?\DateTimeInterface $releaseDate = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['movie:read', 'actor:read', 'movie:write'])]
     private ?int $duration = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['movie:read', 'movie:write', 'actor:read'])]
     private ?float $averageRating = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['movie:read', 'movie:write'])]
     private ?int $entries = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['movie:read', 'movie:write'])]
     private ?int $budget = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['movie:read', 'movie:write'])]
     private ?string $director = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['movie:read', 'movie:write'])]
     private ?string $website = null;
 
     #[ORM\ManyToOne(inversedBy: 'movies')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['movie:read', 'movie:write'])]
     private ?Category $category = null;
 
     #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
+    #[Groups(['movie:read', 'movie:write'])]
     private Collection $actors;
 
     #[ORM\ManyToOne(inversedBy: 'movies')]
