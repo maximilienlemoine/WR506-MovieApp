@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,14 +16,38 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(
+            routeName: 'get_current_user',
+            description: 'Récupère le profil de l\'utilisateur connecté',
+            security: "is_granted('ROLE_USER') and object == user",
+            name: 'get_profil',
+        ),
+        new Patch(
+            routeName: 'update_current_user',
+            description: 'Modifie le profil de l\'utilisateur connecté',
+            security: "is_granted('ROLE_USER') and object == user",
+            name: 'update_profil',
+        ),
+    ],
+    normalizationContext: [
+        'groups' => ['user:read'],
+    ],
+    denormalizationContext: [
+        'groups' => ['user:write'],
+    ],
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['user:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['user:read', 'user:write'])]
     #[Assert\NotBlank(message: 'L\'email est obligatoire')]
     #[Assert\Email(message: 'L\'email doit être valide')]
     #[Assert\Unique(message: 'Cet email est déjà utilisé')]
@@ -42,6 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 180)]
+    #[Groups(['user:read', 'user:write'])]
     #[Assert\NotBlank(message: 'Le prénom est obligatoire')]
     #[Assert\Length(
         min: 2,
@@ -52,6 +81,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user:read', 'user:write'])]
     #[Assert\NotBlank(message: 'Le nom est obligatoire')]
     #[Assert\Length(
         min: 2,
@@ -62,6 +92,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user:read', 'user:write'])]
     #[Assert\NotBlank(message: 'Le nom d\'utilisateur est obligatoire')]
     private ?string $frontUsername = null;
 
@@ -72,6 +103,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $movies;
 
     #[ORM\OneToOne(inversedBy: 'user', targetEntity: MediaObject::class, cascade: ['persist', 'remove'])]
+    #[Groups(['user:read'])]
     private ?MediaObject $mediaObject = null;
 
     public function __construct()
