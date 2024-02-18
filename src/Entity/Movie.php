@@ -26,7 +26,7 @@ class Movie
     private ?\DateTimeInterface $releaseDate = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $duraction = null;
+    private ?int $duration = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $averageRating = null;
@@ -96,14 +96,14 @@ class Movie
         return $this;
     }
 
-    public function getDuraction(): ?int
+    public function getDuration(): ?int
     {
-        return $this->duraction;
+        return $this->duration;
     }
 
-    public function setDuraction(?int $duraction): static
+    public function setDuration(?int $duration): static
     {
-        $this->duraction = $duraction;
+        $this->duration = $duration;
 
         return $this;
     }
