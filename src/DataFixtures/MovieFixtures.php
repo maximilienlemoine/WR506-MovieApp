@@ -7,13 +7,14 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Xylis\FakerCinema\Provider\Movie as MovieProvider;
 
 class MovieFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
-        $faker->addProvider(new \Xylis\FakerCinema\Provider\Movie($faker));
+        $faker->addProvider(new MovieProvider($faker));
 
         foreach (range(1, 40) as $i) {
             $movieTitle = '';

@@ -111,18 +111,17 @@ class ProfileController extends AbstractController
 
         $this->userRepository->saveUser($user);
 
-        if ($user->getMediaObject()) {
-            $media = $this->mediaObjectNormalizer->normalize($user->getMediaObject());
-        } else {
-            $media = null;
-        }
         $userData = [
             'email' => $user->getEmail(),
             'firstname' => $user->getFirstname(),
             'lastname' => $user->getLastname(),
             'username' => $user->getFrontUsername(),
-            'mediaObjects' => $media['contentUrl'],
         ];
+
+        if ($user->getMediaObject()) {
+            $media = $this->mediaObjectNormalizer->normalize($user->getMediaObject());
+            $userData['mediaObjects'] = $media['contentUrl'];
+        }
 
         return new JsonResponse($userData);
     }
