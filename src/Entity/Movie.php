@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -17,6 +18,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 #[ApiResource(
@@ -46,10 +48,12 @@ class Movie
 
     #[ORM\Column(length: 255)]
     #[Groups(['movie:read', 'movie:write', 'actor:read'])]
+    #[Assert\NotBlank(message: 'Le titre du film est obligatoire')]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['movie:read', 'movie:write', 'actor:read'])]
+    #[Assert\NotBlank(message: 'La description du film est obligatoire')]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -62,27 +66,48 @@ class Movie
 
     #[ORM\Column(nullable: true)]
     #[Groups(['movie:read', 'movie:write', 'actor:read'])]
+    #[ApiFilter(RangeFilter::class, properties: ['averageRating'])]
+    #[Assert\Range(
+        notInRangeMessage: 'La note doit être comprise entre {{ min }} et {{ max }}',
+        min: 0,
+        max: 10,
+    )]
     private ?float $averageRating = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['movie:read', 'movie:write'])]
+    #[Assert\Range(
+        notInRangeMessage: 'Le nombre d\'entrées doit être compris entre {{ min }} et {{ max }}',
+        min: 1,
+        max: 1000000000,
+    )]
+    #[Assert\Positive(message: 'Le nombre d\'entrées doit être positif')]
     private ?int $entries = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['movie:read', 'movie:write'])]
+    #[Assert\Range(
+        notInRangeMessage: 'Le budget doit être compris entre {{ min }} et {{ max }}',
+        min: 1,
+        max: 1000000000,
+    )]
+    #[Assert\Positive(message: 'Le budget doit être positif')]
     private ?int $budget = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['movie:read', 'movie:write'])]
+    #[Assert\NotBlank(message: 'Le réalisateur est obligatoire')]
     private ?string $director = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['movie:read', 'movie:write'])]
+    #[Assert\Url(message: 'Le lien doit être valide')]
     private ?string $website = null;
 
     #[ORM\ManyToOne(inversedBy: 'movies')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['movie:read', 'movie:write'])]
+    #[Assert\NotNull(message: 'La catégorie du film est obligatoire')]
     private ?Category $category = null;
 
     #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
