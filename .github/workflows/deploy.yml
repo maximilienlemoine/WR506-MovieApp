@@ -1,0 +1,25 @@
+name: Deploy
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Deploy on VPS
+      uses: appleboy/ssh-action@master
+      with:
+        HOST: ${{ secrets.HOST }}
+        USERNAME: ${{ secrets.USERNAME }}
+        PORT: ${{ secrets.PORT }}
+        KEY: ${{ secrets.SSHKEY }}
+        script: |
+          cd /var/www/movieapp/WR506-MovieApp
+          git pull
+          composer install
+          php bin/console ca:cl
+          php bin/console d:m:m
+          php bin/console ca:cl
