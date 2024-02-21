@@ -1,0 +1,13 @@
+when@prod:
+    sentry:
+        dsn: '%env(SENTRY_DSN)%'
+        options:
+            release: '%env(SENTRY_APP_RELEASE_NAME)%'
+            traces_sample_rate: 0.05
+            integrations:
+                - 'Sentry\Integration\IgnoreErrorsIntegration'
+        tracing:
+            enabled: true
+
+        register_error_listener: false
+        register_error_handler: false
