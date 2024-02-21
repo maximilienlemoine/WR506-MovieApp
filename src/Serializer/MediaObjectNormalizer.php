@@ -9,20 +9,18 @@ use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Vich\UploaderBundle\Storage\StorageInterface;
 
-final class MediaObjectNormalizer implements NormalizerAwareInterface, NormalizerInterface
+final class MediaObjectNormalizer implements NormalizerAwareInterface
 {
-    use NormalizerAwareTrait;
-
     private const ALREADY_CALLED = 'MEDIA_OBJECT_NORMALIZER_ALREADY_CALLED';
 
-    public function __construct(private StorageInterface $storage)
+    public function __construct(private StorageInterface $storage, private NormalizerInterface $normalizer)
     {
     }
 
     /**
      * @throws ExceptionInterface
      */
-    public function normalize($object, string|null $format = null, array $context = []): string|null|array
+    public function normalize($object, string|null $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
     {
         $context[self::ALREADY_CALLED] = true;
 
@@ -38,5 +36,17 @@ final class MediaObjectNormalizer implements NormalizerAwareInterface, Normalize
         }
 
         return $data instanceof MediaObject;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            MediaObject::class => true,
+        ];
+    }
+
+    public function setNormalizer(NormalizerInterface $normalizer): void
+    {
+        $this->normalizer = $normalizer;
     }
 }
