@@ -15,6 +15,16 @@ DirectoryIndex index.php
     Options -MultiViews
 </IfModule>
 
+<IfModule mod_headers.c>
+    SetEnvIf Origin "http(s)?://(movie\.)?(maximilien-lemoine\.fr)$" AccessControlAllowOrigin=$0
+    Header set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
+    Header set Access-Control-Allow-Credentials true
+    Header set Access-Control-Allow-Methods "GET, POST, PATCH, DELETE, OPTIONS"
+    Header set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    Header always set Access-Control-Max-Age "3600"
+</IfModule>
+
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
