@@ -6,14 +6,16 @@ use App\Entity\User;
 use App\Serializer\MediaObjectNormalizer;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class JWTCreatedListener
 {
     private MediaObjectNormalizer $mediaObjectNormalizer;
 
-    public function __construct(MediaObjectNormalizer $mediaObjectNormalizer)
+    public function __construct(MediaObjectNormalizer $mediaObjectNormalizer, NormalizerInterface $normalizer)
     {
         $this->mediaObjectNormalizer = $mediaObjectNormalizer;
+        $this->mediaObjectNormalizer->setNormalizer($normalizer);
     }
 
     /**

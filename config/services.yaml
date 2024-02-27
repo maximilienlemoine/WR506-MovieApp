@@ -12,6 +12,11 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
+    App\Serializer\MediaObjectNormalizer:
+        arguments:
+            $storage: '@vich_uploader.storage.file_system'
+            $normalizer: '@serializer.normalizer.object'
+
     App\Service\MailerService:
         arguments:
             $sender: '%env(MAILER_SENDER)%'
@@ -20,6 +25,8 @@ services:
         class: App\EventListener\JWTCreatedListener
         tags:
             - { name: 'kernel.event_listener', event: 'lexik_jwt_authentication.on_jwt_created', method: 'onJWTCreated' }
+        arguments:
+            $normalizer: '@serializer.normalizer.object'
 
     Sentry\Integration\IgnoreErrorsIntegration:
         arguments:
