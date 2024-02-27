@@ -12,12 +12,6 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
-    App\Serializer\MediaObjectNormalizer:
-        arguments:
-            $storage: '@vich_uploader.storage.local'
-        tags:
-            - { name: 'serializer.normalizer', priority: 10000 }
-
     App\Service\MailerService:
         arguments:
             $sender: '%env(MAILER_SENDER)%'
