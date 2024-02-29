@@ -28,10 +28,7 @@ class ActorFixtures extends Fixture implements DependentFixtureInterface
         $faker->addProvider(new Person($faker));
 
         foreach (range(1, 30) as $i) {
-            $fullname = '';
-            if (!empty($faker->unique()->actor)) {
-                $fullname = $faker->unique()->actor;
-            }
+            $fullname = $faker->unique()->actor;
             $actor = (new Actor())
                 ->setBirthday($faker->dateTimeBetween(
                     '-80 years'

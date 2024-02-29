@@ -17,12 +17,8 @@ class MovieFixtures extends Fixture implements DependentFixtureInterface
         $faker->addProvider(new MovieProvider($faker));
 
         foreach (range(1, 40) as $i) {
-            $movieTitle = '';
-            if (!empty($faker->unique()->movie)) {
-                $movieTitle = $faker->unique()->movie;
-            }
             $movie = (new Movie())
-                ->setTitle($movieTitle)
+                ->setTitle($faker->unique()->movie)
                 ->setDescription($faker->text(200))
                 ->setDuration(rand(100, 250))
                 ->setReleaseDate($faker->dateTimeBetween(
